@@ -191,7 +191,7 @@ public class jfHome extends JFrame implements WindowListener {
         for (int i=0; i<numeroSquadreCorrente; i++){
             alSquadre.add(jtfSquadre[i].getText());
         }        
-        ArrayList<ArrayList<Accoppiamento>> alGiornate = algor.doBergerAlgorithm(numeroSquadreCorrente);
+        ArrayList<ArrayList<AccoppiamentoVO>> alGiornate = algor.doBergerAlgorithm(numeroSquadreCorrente);
         Write.writeTXT(alGiornate, alSquadre);
         long tempo = System.currentTimeMillis() - inizio;
         JOptionPane.showMessageDialog(this, "Terminato in " + tempo + " ms");

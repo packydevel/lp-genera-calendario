@@ -3,19 +3,19 @@
  * @author Luca
  */
 
-public class Accoppiamento {
+public class AccoppiamentoVO {
 
     private int casa;
     private int ospite;
     private int riposa;
 
-    public Accoppiamento(int home, int visitor) {
+    public AccoppiamentoVO(int home, int visitor) {
         //System.out.println(casa + " - " + ospite);
         this.casa = home;
         this.ospite = visitor;
     }
 
-    public Accoppiamento(int stop) {
+    public AccoppiamentoVO(int stop) {
         this.riposa = stop;
     }
 

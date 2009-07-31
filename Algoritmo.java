@@ -6,10 +6,82 @@ import java.util.Collections;
  *
  * @author Luca     
  */
+@SuppressWarnings("serial")
 public class Algoritmo {
 
     private boolean ghostTeam; //squadra fantasma per giornata riposo
     private int numberTeam; // numero squadre
+
+    /**Algoritmo di Berger funzionante
+     * Si prepara un arraylist di numeri interi corrispondenti alle squadre, lo si shuffla
+     * si crea la matrice di berger, 2righe e squadre/2 colonne e lo si popola con i numeri dell'arraylist
+     *
+     *
+     * @param squadre numero di squadre
+     */
+    public ArrayList<ArrayList<AccoppiamentoVO>> doBergerAlgorithm(int squadre){
+        long inizio = System.currentTimeMillis();
+        controlloDispari(squadre);
+
+        ArrayList<Integer> alNumbers = new ArrayList<Integer>();
+
+        for (int i = 1; i <= numberTeam; i++)
+            alNumbers.add(i);
+
+        int mid = numberTeam/2;
+        int giornate = (numberTeam - 1) * 2;
+        int verso = -1;
+        if (isDispari(random(numberTeam)))
+            verso = 1;
+        int[][] matriceBerger = new int[2][mid];
+
+        //esegue un rimescolamento dei numeri
+        Collections.shuffle(alNumbers);
+        //estrae l'elemento fisso e lo rimuove dall'arraylist e lo posiziona in 0,0 della matrice
+        if (ghostTeam)
+            matriceBerger[0][0] = numberTeam;
+        else
+            matriceBerger[0][0] = alNumbers.get(random(numberTeam));
+
+        alNumbers.remove(alNumbers.indexOf(matriceBerger[0][0]));
+
+        for (int i=0; i<mid-1; i++)
+            matriceBerger[0][i+1] = alNumbers.get(i);
+        for (int i=mid-1; i<alNumbers.size(); i++)
+            matriceBerger[1][i+1-mid] = alNumbers.get(i);
+
+        ArrayList<ArrayList<AccoppiamentoVO>> alGiornate = new ArrayList<ArrayList<AccoppiamentoVO>>();
+        // Ad ogni ciclo/giornata, ruota nel senso del verso gli elementi dell'arraylist numeri
+        // tenendo fisso un elemento
+        for (int gg = 0; gg < giornate; gg++) {
+            //System.out.println("Giornata "+(gg+1));
+            ArrayList<AccoppiamentoVO> alAccoppiamenti= new ArrayList<AccoppiamentoVO>();
+            for (int col = 0; col < mid; col++){
+                AccoppiamentoVO objAccopp = null;
+                if (ghostTeam) {
+                    if (col < mid - 1){
+                        int k = col + 1;
+                        if (isDispari(gg))
+                            objAccopp = new AccoppiamentoVO(matriceBerger[0][k],matriceBerger[1][k]);
+                        else
+                            objAccopp = new AccoppiamentoVO(matriceBerger[1][k],matriceBerger[0][k]);
+                    } else if (col == mid - 1)
+                        objAccopp = new AccoppiamentoVO(matriceBerger[1][0]);
+                } else {
+                    if (isDispari(gg))
+                        objAccopp = new AccoppiamentoVO(matriceBerger[0][col],matriceBerger[1][col]);
+                    else
+                        objAccopp = new AccoppiamentoVO(matriceBerger[1][col],matriceBerger[0][col]);
+                }
+                alAccoppiamenti.add(objAccopp);
+            }
+            alGiornate.add(alAccoppiamenti);
+            matriceBerger = rotateMatrice(matriceBerger, verso, mid);
+        }
+        long tempo = System.currentTimeMillis() - inizio;
+        System.out.println("tempo algoritmo berger = " + tempo + " ms");
+        return alGiornate;
+    } // end berger
 
     /**Algoritmo totalmente random, con uso dei nomi delle squadre e stop/ritorno indietro
      * di giornata se si blocca???
@@ -231,78 +303,7 @@ public class Algoritmo {
             }
             System.out.println();
         }
-    }
-    
-    /**Algoritmo di Berger funzionante
-     * Si prepara un arraylist di numeri interi corrispondenti alle squadre, lo si shuffla
-     * si crea la matrice di berger, 2righe e squadre/2 colonne e lo si popola con i numeri dell'arraylist
-     * 
-     *
-     * @param squadre numero di squadre
-     */
-    public ArrayList<ArrayList<Accoppiamento>> doBergerAlgorithm(int squadre){
-        long inizio = System.currentTimeMillis();
-        controlloDispari(squadre);
-
-        ArrayList<Integer> alNumbers = new ArrayList<Integer>();
-
-        for (int i = 1; i <= numberTeam; i++)
-            alNumbers.add(i);
-
-        int mid = numberTeam/2;
-        int giornate = (numberTeam - 1) * 2;
-        int verso = -1;
-        if (isDispari(random(numberTeam)))
-            verso = 1;
-        int[][] matriceBerger = new int[2][mid];
-
-        //esegue un rimescolamento dei numeri
-        Collections.shuffle(alNumbers);
-        //estrae l'elemento fisso e lo rimuove dall'arraylist e lo posiziona in 0,0 della matrice
-        if (ghostTeam)
-            matriceBerger[0][0] = numberTeam;
-        else
-            matriceBerger[0][0] = alNumbers.get(random(numberTeam));
-
-        alNumbers.remove(alNumbers.indexOf(matriceBerger[0][0]));
-
-        for (int i=0; i<mid-1; i++)
-            matriceBerger[0][i+1] = alNumbers.get(i);
-        for (int i=mid-1; i<alNumbers.size(); i++)
-            matriceBerger[1][i+1-mid] = alNumbers.get(i);
-
-        ArrayList<ArrayList<Accoppiamento>> alGiornate = new ArrayList<ArrayList<Accoppiamento>>();
-        // Ad ogni ciclo/giornata, ruota nel senso del verso gli elementi dell'arraylist numeri
-        // tenendo fisso un elemento
-        for (int gg = 0; gg < giornate; gg++) {
-            //System.out.println("Giornata "+(gg+1));
-            ArrayList<Accoppiamento> alAccoppiamenti= new ArrayList<Accoppiamento>();
-            for (int col = 0; col < mid; col++){
-                Accoppiamento objAccopp = null;
-                if (ghostTeam) {
-                    if (col < mid - 1){
-                        int k = col + 1;
-                        if (isDispari(gg))
-                            objAccopp = new Accoppiamento(matriceBerger[0][k],matriceBerger[1][k]);
-                        else
-                            objAccopp = new Accoppiamento(matriceBerger[1][k],matriceBerger[0][k]);
-                    } else if (col == mid - 1)
-                        objAccopp = new Accoppiamento(matriceBerger[1][0]);
-                } else {
-                    if (isDispari(gg))
-                        objAccopp = new Accoppiamento(matriceBerger[0][col],matriceBerger[1][col]);
-                    else
-                        objAccopp = new Accoppiamento(matriceBerger[1][col],matriceBerger[0][col]);
-                }
-                alAccoppiamenti.add(objAccopp);
-            }
-            alGiornate.add(alAccoppiamenti);
-            matriceBerger = rotateMatrice(matriceBerger, verso, mid);
-        }
-        long tempo = System.currentTimeMillis() - inizio;
-        System.out.println("tempo algoritmo berger = " + tempo + " ms");
-        return alGiornate;
-    } // end berger
+    }        
 
     public void blueBonesAlgorithm(int squadre){
         controlloDispari(squadre);
