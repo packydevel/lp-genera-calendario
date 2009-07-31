@@ -14,7 +14,7 @@ public class Write {
     private static String curDir = System.getProperty("user.dir") + File.separator;
     private static String crlf = "\r\n";
 
-    public static void writeTXT(ArrayList<ArrayList<Accoppiamento>> alGiornate, ArrayList<String> alSquadre) {
+    public static void writeTXT(ArrayList<ArrayList<AccoppiamentoVO>> alGiornate, ArrayList<String> alSquadre) {
 
         String nomefile = curDir + "prova.txt";
         File file = new File(nomefile);
@@ -24,12 +24,12 @@ public class Write {
             file.createNewFile();
             BufferedWriter out = new BufferedWriter(new FileWriter(file));
             for (int gg = 0; gg < alGiornate.size(); gg++) {
-                ArrayList<Accoppiamento> alAccopp = alGiornate.get(gg);
+                ArrayList<AccoppiamentoVO> alAccopp = alGiornate.get(gg);
                 String giornata = "Giornata " + (gg+1) + crlf;
                 out.write(giornata);
                 int size = alAccopp.size();
                 for (int i = 0; i < size; i++){
-                    Accoppiamento singolo = alAccopp.get(i);
+                    AccoppiamentoVO singolo = alAccopp.get(i);
                     String partita = null;
                     if ((i==size-1) && (singolo.getRiposa()!=0))
                         partita = "Riposa: " + alSquadre.get(singolo.getRiposa()-1) + crlf;
