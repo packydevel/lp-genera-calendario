@@ -7,10 +7,10 @@ import java.util.Collections;
  * @author Luca     
  */
 @SuppressWarnings("serial")
-public class Algoritmo {
+public class Algoritmi {
 
-    private boolean ghostTeam; //squadra fantasma per giornata riposo
-    private int numberTeam; // numero squadre
+    private static boolean ghostTeam; //squadra fantasma per giornata riposo
+    private static int numberTeam; // numero squadre
 
     /**Algoritmo di Berger funzionante
      * Si prepara un arraylist di numeri interi corrispondenti alle squadre, lo si shuffla
@@ -19,7 +19,7 @@ public class Algoritmo {
      *
      * @param squadre numero di squadre
      */
-    public ArrayList<ArrayList<AccoppiamentoVO>> doBergerAlgorithm(int squadre){
+    public static ArrayList<ArrayList<AccoppiamentoVO>> doBergerAlgorithm(int squadre){
         long inizio = System.currentTimeMillis();
         controlloDispari(squadre);
 
@@ -373,7 +373,7 @@ public class Algoritmo {
     }
 
 
-    private int random(int numero) {
+    private static int random(int numero) {
         return (int)(Math.random()*numero);
     }
 
@@ -388,7 +388,7 @@ public class Algoritmo {
      *
      * @param numero numero da controllare
      */
-    private void controlloDispari(int numero){
+    private static void controlloDispari(int numero){
         ghostTeam = false;
         numberTeam = numero;
         
@@ -403,14 +403,14 @@ public class Algoritmo {
      * @param numero numero da controllare
      * @return booleano true = dispari, false = pari
      */
-    private boolean isDispari(int numero){
+    private static boolean isDispari(int numero){
         boolean dispari = false;
         if (numero % 2 == 1)
             dispari = true;
         return dispari;
     }
 
-    private int[][] rotateMatriceBerger(int[][] matrice, int verso, int mid){
+    private static int[][] rotateMatriceBerger(int[][] matrice, int verso, int mid){
         int pop, row, col;
         int scambiToDo = mid*2-2;
         if (verso == -1){
