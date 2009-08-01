@@ -54,7 +54,6 @@ public class Algoritmo {
         // Ad ogni ciclo/giornata, ruota nel senso del verso gli elementi dell'arraylist numeri
         // tenendo fisso un elemento
         for (int gg = 0; gg < giornate; gg++) {
-            //System.out.println("Giornata "+(gg+1));
             ArrayList<AccoppiamentoVO> alAccoppiamenti= new ArrayList<AccoppiamentoVO>();
             for (int col = 0; col < mid; col++){
                 AccoppiamentoVO objAccopp = null;
@@ -76,7 +75,7 @@ public class Algoritmo {
                 alAccoppiamenti.add(objAccopp);
             }
             alGiornate.add(alAccoppiamenti);
-            matriceBerger = rotateMatrice(matriceBerger, verso, mid);
+            matriceBerger = rotateMatriceBerger(matriceBerger, verso, mid);
         }
         long tempo = System.currentTimeMillis() - inizio;
         System.out.println("tempo algoritmo berger = " + tempo + " ms");
@@ -411,7 +410,7 @@ public class Algoritmo {
         return dispari;
     }
 
-    private int[][] rotateMatrice(int[][] matrice, int verso, int mid){
+    private int[][] rotateMatriceBerger(int[][] matrice, int verso, int mid){
         int pop, row, col;
         int scambiToDo = mid*2-2;
         if (verso == -1){
@@ -445,14 +444,4 @@ public class Algoritmo {
         }
         return matrice;
     }
-
-
-    private int shiftRight(int[] b, int fix) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    private void shiftLeft(int[] a, int popped) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
 }

@@ -44,4 +44,12 @@ public class Write {
         } catch (IOException ex) {}
     }
 
+    public static void writeHtml(){
+
+    }
+
+    public static void writePdf(){
+
+    }
+
 }
