@@ -126,10 +126,6 @@ public class jfHome extends JFrame implements WindowListener {
         }); //addActionListener
         jpNorth.add(jcbNumeroSquadre);
     }
-
-    private void initPaneSouth(){
-
-    }
     
     /**imposta le dimensioni del pannello
      *
@@ -185,13 +181,12 @@ public class jfHome extends JFrame implements WindowListener {
 
     private void creaCalendario(){
         long inizio = System.currentTimeMillis();
-        Algoritmo algor = new Algoritmo();
         ArrayList<String> alSquadre = new ArrayList<String>();
         int numeroSquadreCorrente = ((Integer) jcbNumeroSquadre.getSelectedItem()).intValue();
         for (int i=0; i<numeroSquadreCorrente; i++){
             alSquadre.add(jtfSquadre[i].getText());
         }        
-        ArrayList<ArrayList<AccoppiamentoVO>> alGiornate = algor.doBergerAlgorithm(numeroSquadreCorrente);
+        ArrayList<ArrayList<AccoppiamentoVO>> alGiornate = Algoritmi.doBergerAlgorithm(numeroSquadreCorrente);
         Write.writeTXT(alGiornate, alSquadre);
         long tempo = System.currentTimeMillis() - inizio;
         JOptionPane.showMessageDialog(this, "Terminato in " + tempo + " ms");
@@ -202,7 +197,5 @@ public class jfHome extends JFrame implements WindowListener {
     public void windowIconified(WindowEvent e) { }
     public void windowDeiconified(WindowEvent e) { }
     public void windowActivated(WindowEvent e) { }
-    public void windowDeactivated(WindowEvent e) { }
-
-    
+    public void windowDeactivated(WindowEvent e) { }    
 }
