@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 @SuppressWarnings("serial")
-public class jfHomee extends JFrame implements WindowListener{
+public class jfHome extends JFrame implements WindowListener{
     
     private JPanel jpanel;
     private GridBagConstraints gbcLabel, gbcTextField, gbcComboBox, gbcButton;
@@ -33,7 +33,7 @@ public class jfHomee extends JFrame implements WindowListener{
     private JTextField[] jtfTeams;
 
     /**Costruttore */
-    public jfHomee(){
+    public jfHome(){
         super("Generatore Calendario ");
         this.setPreferredSize(new Dimension(400, 650));
 
@@ -128,7 +128,7 @@ public class jfHomee extends JFrame implements WindowListener{
                 }
 
                 @SuppressWarnings("unchecked")
-                jfHomee jframe = new jfHomee();
+                jfHome jframe = new jfHome();
             } //end run
         }); //end invokelater
     }//end main
