@@ -1,4 +1,5 @@
 import de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,6 +10,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collections;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -18,9 +20,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
-
 @SuppressWarnings("serial")
-public class jfHome2 extends JFrame implements WindowListener{
+public class jfHomee extends JFrame implements WindowListener{
     
     private JPanel jpanel;
     private GridBagConstraints gbcLabel, gbcTextField, gbcComboBox, gbcButton;
@@ -32,7 +33,7 @@ public class jfHome2 extends JFrame implements WindowListener{
     private JTextField[] jtfTeams;
 
     /**Costruttore */
-    public jfHome2(){
+    public jfHomee(){
         super("Generatore Calendario ");
         this.setPreferredSize(new Dimension(400, 650));
 
@@ -127,7 +128,7 @@ public class jfHome2 extends JFrame implements WindowListener{
                 }
 
                 @SuppressWarnings("unchecked")
-                jfHome2 jframe = new jfHome2();
+                jfHomee jframe = new jfHomee();
             } //end run
         }); //end invokelater
     }//end main
@@ -154,32 +155,41 @@ public class jfHome2 extends JFrame implements WindowListener{
         i = currentTeamsNumber;
         jlTeams = new JLabel[i];
         jtfTeams = new JTextField[i];
+        gbcLabel.gridx = 0;
+        gbcTextField.gridx = 1;
+        gbcTextField.ipadx = 10;
+        gbcTextField.gridwidth = 3;
 
         for (int j = 0; j < i; j++) {
 
             jlTeams[j] = new JLabel("Squadra " + (j + 1) + ":");
-            gbcLabel.gridx = 0;
+            
             gbcLabel.gridy = y;
             jpanel.add(jlTeams[j], gbcLabel);
             jlTeams[j].setVisible(true);
 
             jtfTeams[j] = new JTextField();
             jtfTeams[j].setPreferredSize(new Dimension(250, 20));
-            gbcTextField.gridx = 1;
-            gbcTextField.gridy = y;
-            gbcTextField.ipadx = 100;
+            gbcTextField.gridy = y;            
             jpanel.add(jtfTeams[j], gbcTextField);
             jtfTeams[j].setVisible(true);
 
             y++;
         }
         previousTeamsNumber = currentTeamsNumber;
+
         validate();
     }// end creaOggetti
 
     /**Evento creazione Calendario*/
     private void creaCalendario(){
         long inizio = System.currentTimeMillis();
+
+        if (jcbNumeroSquadre.getSelectedItem()==null){
+            JOptionPane.showMessageDialog(this, "Tutti i campi devo essere valorizzati!!!",
+                    "Errore", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         int numeroSquadreCorrente = ((Integer) jcbNumeroSquadre.getSelectedItem()).intValue();
 
         if (jtfNomeCampionato.getText().length() == 0) {
@@ -190,7 +200,7 @@ public class jfHome2 extends JFrame implements WindowListener{
 
         for (int j = 0; j < numeroSquadreCorrente; j++) {
             if (jtfTeams[j].getText().length() == 0) {
-                JOptionPane.showInternalMessageDialog(this, "Tutti i campi devo essere valorizzati!!!",
+                JOptionPane.showMessageDialog(this, "Tutti i campi devo essere valorizzati!!!",
                         "Errore", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -203,7 +213,7 @@ public class jfHome2 extends JFrame implements WindowListener{
 
         for (String s : alSquadre) {
             if (Collections.frequency(alSquadre, s) > 1) {
-                JOptionPane.showInternalMessageDialog(this,
+                JOptionPane.showMessageDialog(this,
                         "Non è possibile avere più Squadre con lo stesso nome!!!",
                         "Errore", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -211,7 +221,8 @@ public class jfHome2 extends JFrame implements WindowListener{
         }
 
         ArrayList<ArrayList<AccoppiamentoVO>> alGiornate = Algoritmi.doBergerAlgorithm(numeroSquadreCorrente);
-        Write.writeTXT(alGiornate, alSquadre);
+        Writer scrittura = new Writer(jtfNomeCampionato.getText(),alSquadre,alGiornate);
+        scrittura.writeALL();
         long tempo = System.currentTimeMillis() - inizio;
         JOptionPane.showMessageDialog(this, "Terminato in " + tempo + " ms");
     } //end creaCalendario
