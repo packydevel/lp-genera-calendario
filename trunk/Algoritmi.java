@@ -11,6 +11,7 @@ public class Algoritmi {
 
     private static boolean ghostTeam; //squadra fantasma per giornata riposo
     private static int numberTeam; // numero squadre
+    private static ArrayList<Integer> alNumbers;
 
     /**Algoritmo di Berger funzionante
      * Si prepara un arraylist di numeri interi corrispondenti alle squadre, lo si shuffla
@@ -21,12 +22,7 @@ public class Algoritmi {
      */
     public static ArrayList<ArrayList<AccoppiamentoVO>> doBergerAlgorithm(int squadre){
         long inizio = System.currentTimeMillis();
-        controlloDispari(squadre);
-
-        ArrayList<Integer> alNumbers = new ArrayList<Integer>();
-
-        for (int i = 1; i <= numberTeam; i++)
-            alNumbers.add(i);
+        controlloDispari(squadre);        
 
         int mid = numberTeam/2;
         int giornate = (numberTeam - 1) * 2;
@@ -35,8 +31,7 @@ public class Algoritmi {
             verso = 1;
         int[][] matriceBerger = new int[2][mid];
 
-        //esegue un rimescolamento dei numeri
-        Collections.shuffle(alNumbers);
+        initNumbersArrayList();
         //estrae l'elemento fisso e lo rimuove dall'arraylist e lo posiziona in 0,0 della matrice
         if (ghostTeam)
             matriceBerger[0][0] = numberTeam;
@@ -308,18 +303,20 @@ public class Algoritmi {
         controlloDispari(squadre);
 
         // Generate the fixtures using the cyclic algorithm.
-        int totalRounds = numberTeam - 1;
-        int matchesPerRound = numberTeam / 2;
-        String[][] rounds = new String[totalRounds][matchesPerRound];
+        int giornate = numberTeam - 1;
+        int mid = numberTeam / 2;
+        String[][] rounds = new String[giornate][mid];
 
-        for (int round = 0; round < totalRounds; round++) {
-            for (int match = 0; match < matchesPerRound; match++) {
-                int home = (round + match) % (totalRounds);
-                int away = (totalRounds - match + round) % (totalRounds);
+        initNumbersArrayList();
+
+        for (int round = 0; round < giornate; round++) {
+            for (int match = 0; match < mid; match++) {
+                int home = (round + match) % giornate;
+                int away = (giornate - match + round) % giornate;
                 // Last team stays in the same place while the others
                 // rotate around it.
                 if (match == 0) {
-                    away = totalRounds;
+                    away = giornate;
                 }
                 // Add one so teams are number 1 to teams not 0 to teams - 1
                 // upon display.
@@ -328,10 +325,10 @@ public class Algoritmi {
         }
 
         // Interleave so that home and away games are fairly evenly dispersed.
-        String[][] interleaved = new String[totalRounds][matchesPerRound];
+        String[][] interleaved = new String[giornate][mid];
 
         int evn = 0;
-        int odd = (numberTeam / 2);
+        int odd = mid;
         for (int i = 0; i < rounds.length; i++) {
             if (i % 2 == 0) {
                 interleaved[i] = rounds[evn++];
@@ -410,6 +407,13 @@ public class Algoritmi {
         return dispari;
     }
 
+    /**effettua la rotazione della matrice in senso orario/antiorario
+     *
+     * @param matrice matrice da ruotare
+     * @param verso orario
+     * @param mid metà
+     * @return matrice ruotata
+     */
     private static int[][] rotateMatriceBerger(int[][] matrice, int verso, int mid){
         int pop, row, col;
         int scambiToDo = mid*2-2;
@@ -443,5 +447,20 @@ public class Algoritmi {
             matrice[row][col] = pop;
         }
         return matrice;
+    }
+
+    private static void initNumbersArrayList(){
+        alNumbers = new ArrayList<Integer>();
+        for (int i = 1; i <= numberTeam; i++)
+            alNumbers.add(i);
+        Collections.shuffle(alNumbers);
+    }
+
+    public static void main (String args[]){
+        Algoritmi a1 = new Algoritmi();
+        a1.blueBonesAlgorithm(10);
+        System.out.println();
+        Algoritmi a2 = new Algoritmi();
+        a2.blueBonesAlgorithm(10);
     }
 }
