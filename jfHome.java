@@ -15,22 +15,32 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
+/**Gui principale
+ *
+ * @author Luca
+ */
 @SuppressWarnings("serial")
 public class jfHome extends JFrame implements WindowListener{
     
     private JPanel jpanel;
     private GridBagConstraints gbcLabel, gbcTextField, gbcComboBox, gbcButton;
     private JTextField jtfNomeCampionato;
-    private JComboBox jcbNumeroSquadre, jcbTipoFile;
+    private JComboBox jcbNumeroSquadre;
     private JButton jbPulisci, jbCreaCalendario;
-    private int previousTeamsNumber;
+    private int previousTeamsNumber, currentTeamsNumber;
     private JLabel[] jlTeams;
     private JTextField[] jtfTeams;
+    private JMenuBar jmbMenu;
+    private ArrayList<ArrayList<AccoppiamentoVO>> alGiornate;
+    private ArrayList<String> alSquadre;
 
     /**Costruttore */
     public jfHome(){
@@ -108,6 +118,7 @@ public class jfHome extends JFrame implements WindowListener{
         gbcTextField.fill = GridBagConstraints.NONE;
 
         this.add(jpanel);
+        initMenuBar();
         this.setVisible(true);
         pack();
         addWindowListener(this);
@@ -142,7 +153,7 @@ public class jfHome extends JFrame implements WindowListener{
             return;
         }
 
-        int currentTeamsNumber = ((Integer) jcbNumeroSquadre.getSelectedItem()).intValue();
+        currentTeamsNumber = ((Integer) jcbNumeroSquadre.getSelectedItem()).intValue();
 
         if (currentTeamsNumber != previousTeamsNumber && previousTeamsNumber != 0) {
             for (int j = 0; j < previousTeamsNumber; j++) {
@@ -206,7 +217,7 @@ public class jfHome extends JFrame implements WindowListener{
             }
         }
 
-        ArrayList<String> alSquadre = new ArrayList<String>();
+        alSquadre = new ArrayList<String>();
         for (int i=0; i<numeroSquadreCorrente; i++){
             alSquadre.add(jtfTeams[i].getText());
         }
@@ -220,16 +231,55 @@ public class jfHome extends JFrame implements WindowListener{
             }
         }
 
-        ArrayList<ArrayList<AccoppiamentoVO>> alGiornate = Algoritmi.doBergerAlgorithm(numeroSquadreCorrente);
+        alGiornate = Algoritmi.doBergerAlgorithm(numeroSquadreCorrente);
         Writer scrittura = new Writer(jtfNomeCampionato.getText(),alSquadre,alGiornate);
         scrittura.writeALL();
         long tempo = System.currentTimeMillis() - inizio;
         JOptionPane.showMessageDialog(this, "Terminato in " + tempo + " ms");
     } //end creaCalendario
 
+    /**pulisce i campi textfield e combobox*/
     private void pulisciCampi(){
-
+        jtfNomeCampionato.setText(null);
+        jcbNumeroSquadre.setSelectedItem(null);
+        for (int i=0; i<currentTeamsNumber; i++)
+            jtfTeams[i].setText(null);
     }
+
+    /**Inizializza la menubar*/
+    private void initMenuBar(){
+        jmbMenu = new JMenuBar();
+
+        JMenu jmCalendar = new JMenu("Calendario");
+        jmbMenu.add(jmCalendar);
+        JMenuItem jmiCreateCalendar = new JMenuItem("Crea nuovo calendario");
+        jmCalendar.add(jmiCreateCalendar);
+
+        JMenu jmPrint = new JMenu("Stampa");
+        jmbMenu.add(jmPrint);
+        JMenuItem jmiTxt = new JMenuItem("File TXT");
+        jmiTxt.addActionListener(actionListener());
+        JMenuItem jmiHtml = new JMenuItem("File HTML");
+        jmiHtml.addActionListener(actionListener());
+        JMenuItem jmiPdf = new JMenuItem("File PDF");
+        jmiPdf.addActionListener(actionListener());
+        JMenuItem jmiAll = new JMenuItem("Tutti i file");
+        jmiAll.addActionListener(actionListener());
+        jmPrint.add(jmiTxt);
+        jmPrint.add(jmiHtml);
+        jmPrint.add(jmiPdf);
+        jmPrint.add(jmiAll);
+
+        this.setJMenuBar(jmbMenu);
+    }
+
+    private ActionListener actionListener(){
+        return new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                
+            }
+        };
+    }   
 
     public void windowClosing(WindowEvent e) {
         int i = JOptionPane.showConfirmDialog(this, "Vuoi chiudere l'applicazione?",
