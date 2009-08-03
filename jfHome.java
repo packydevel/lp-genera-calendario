@@ -194,7 +194,7 @@ public class jfHome extends JFrame implements WindowListener{
 
     /**Evento creazione Calendario*/
     private void creaCalendario(){
-        long inizio = System.currentTimeMillis();
+        //long inizio = System.currentTimeMillis();
 
         if (jcbNumeroSquadre.getSelectedItem()==null){
             JOptionPane.showMessageDialog(this, "Tutti i campi devo essere valorizzati!!!",
@@ -232,10 +232,10 @@ public class jfHome extends JFrame implements WindowListener{
         }
 
         alGiornate = Algoritmi.doBergerAlgorithm(numeroSquadreCorrente);
-        Writer scrittura = new Writer(jtfNomeCampionato.getText(),alSquadre,alGiornate);
-        scrittura.writeALL();
-        long tempo = System.currentTimeMillis() - inizio;
-        JOptionPane.showMessageDialog(this, "Terminato in " + tempo + " ms");
+        //Writer scrittura = new Writer(jtfNomeCampionato.getText(),alSquadre,alGiornate);
+        //scrittura.writeALL();
+        //long tempo = System.currentTimeMillis() - inizio;
+        JOptionPane.showMessageDialog(this, "Calendario generato, puoi scegliere la modalità di stampa :)");
     } //end creaCalendario
 
     /**pulisce i campi textfield e combobox*/
@@ -258,12 +258,16 @@ public class jfHome extends JFrame implements WindowListener{
         JMenu jmPrint = new JMenu("Stampa");
         jmbMenu.add(jmPrint);
         JMenuItem jmiTxt = new JMenuItem("File TXT");
+        jmiTxt.setName("TXT");
         jmiTxt.addActionListener(actionListener());
         JMenuItem jmiHtml = new JMenuItem("File HTML");
+        jmiHtml.setName("HTML");
         jmiHtml.addActionListener(actionListener());
         JMenuItem jmiPdf = new JMenuItem("File PDF");
+        jmiPdf.setName("PDF");
         jmiPdf.addActionListener(actionListener());
         JMenuItem jmiAll = new JMenuItem("Tutti i file");
+        jmiAll.setName("ALL");
         jmiAll.addActionListener(actionListener());
         jmPrint.add(jmiTxt);
         jmPrint.add(jmiHtml);
@@ -276,7 +280,20 @@ public class jfHome extends JFrame implements WindowListener{
     private ActionListener actionListener(){
         return new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                
+
+                Writer scrittura = new Writer(jtfNomeCampionato.getText(),
+                                            alSquadre, alGiornate);
+                String menuItemSource = ((JMenuItem)evt.getSource()).getName();
+                if (menuItemSource.equalsIgnoreCase("TXT"))
+                    scrittura.writeTXT();
+                else if (menuItemSource.equalsIgnoreCase("HTML"))
+                    scrittura.writeHtml();
+                else if (menuItemSource.equalsIgnoreCase("PDF"))
+                    scrittura.writePdf();
+                else if (menuItemSource.equalsIgnoreCase("ALL"))
+                    scrittura.writeALL();
+                JOptionPane.showMessageDialog(getContentPane(),
+                                            "file/s salvati in "+scrittura.getCurDir());
             }
         };
     }   

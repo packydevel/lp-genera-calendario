@@ -40,6 +40,13 @@ public class Writer {
         alGiornate = giornateAL;
     }
 
+    /**Restituisce la directory corrente
+     * 
+     * @return directory
+     */
+    public String getCurDir(){
+        return curDir;
+    }
     /**Scrive su file di testo */
     public void writeTXT() {
         String crlf = "\r\n";
