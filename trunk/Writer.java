@@ -1,7 +1,9 @@
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
 import com.lowagie.text.PageSize;
 
+import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,8 +12,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**Effettua la scrittura del calendario su uno o più tipi di file
  *
@@ -80,16 +80,21 @@ public class Writer {
 
     /**Scrive su file pdf */
     public void writePdf(){
-        pdf = new Document(PageSize.A4,5,5,5,5);
         try {
-            // crea il writer che ascolta il documento e directs a PDF-stream to a file
-            PdfWriter.getInstance(pdf, new FileOutputStream(controllaFile(nomefile)));
-        }
-        catch (FileNotFoundException fnfe) {}
-        catch (DocumentException de) {}
-        // apertura documento
-        pdf.open();
-
+            initPDF();
+            for (int gg = 0; gg < alGiornate.size(); gg++) {
+                ArrayList<AccoppiamentoVO> alAccopp = alGiornate.get(gg);
+                addParagraphPdf("Giornata " + (gg+1), true);
+                int size = alAccopp.size();
+                for (int i = 0; i < size; i++){
+                    String partita = accoppiamenti(alAccopp.get(i), i, size);
+                    addParagraphPdf(partita, false);
+                }
+                addParagraphPdf("", false);
+            }
+            pdf.close();
+        } catch (FileNotFoundException fnfe) {fnfe.printStackTrace();}
+        catch (DocumentException de) {de.printStackTrace();}
     }
 
     /**scrive su tutti i formati implementati */
@@ -98,23 +103,30 @@ public class Writer {
         try {
             bwTXT = creaFile(nomefile + ".txt");
             bwHTML = creaFile(nomefile + ".html");
+            initPDF();
             initHtml("Calendario "+ nomefile);
             for (int gg = 0; gg < alGiornate.size(); gg++) {
                 ArrayList<AccoppiamentoVO> alAccopp = alGiornate.get(gg);
-                bwTXT.write("Giornata " + (gg+1) + crlf);
-                initTableHTML("Giornata " + (gg+1));
+                String giornata = "Giornata " + (gg+1);
+                bwTXT.write(giornata + crlf);
+                initTableHTML(giornata);
+                addParagraphPdf(giornata, true);
                 int size = alAccopp.size();
                 for (int i = 0; i < size; i++){
                     String partita = accoppiamenti(alAccopp.get(i), i, size);
                     bwTXT.write(partita+crlf);
                     initTableRowHTML(partita);
+                    addParagraphPdf(partita, false);
                 }
                 bwTXT.write(crlf);
                 closeTableHTML();
+                addParagraphPdf("", false);
             }
             bwTXT.close();
             bwHTML.close();
+            pdf.close();
         } catch (IOException ioe) {ioe.printStackTrace();}
+        catch (DocumentException de) {de.printStackTrace();}
     }
 
     /**crea il file, se esiste lo cancella, e inizializza il bufferedwriter
@@ -158,6 +170,22 @@ public class Writer {
 
     private void closeTableHTML() throws IOException{
         bwHTML.write("</table>\n");
+    }
+
+    private void initPDF() throws FileNotFoundException, DocumentException{
+        pdf = new Document(PageSize.A4);
+        // crea il writer che ascolta il documento e directs a PDF-stream to a file
+        PdfWriter.getInstance(pdf, new FileOutputStream(controllaFile(nomefile+".pdf")));
+        // apertura documento
+        pdf.open();
+    }
+
+    private void addParagraphPdf(String testo, boolean bold) throws DocumentException{
+        testo += "\n";
+        if (bold)
+            pdf.add(new Paragraph(testo, new Font(Font.TIMES_ROMAN, 12, Font.BOLD)));
+        else
+            pdf.add(new Paragraph(testo, new Font(Font.TIMES_ROMAN, 12)));
     }
 
     private String accoppiamenti(AccoppiamentoVO singolo, int i, int size){
