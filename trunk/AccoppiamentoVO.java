@@ -13,6 +13,7 @@ public class AccoppiamentoVO {
         //System.out.println(casa + " - " + ospite);
         this.casa = home;
         this.ospite = visitor;
+        this.riposa = -1;
     }
 
     public AccoppiamentoVO(int stop) {
