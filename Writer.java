@@ -34,6 +34,8 @@ public class Writer {
     private String nomefile;
     private ArrayList <ArrayList<AccoppiamentoVO>> alGiornate;
     private ArrayList<String> alSquadre;
+    private FileOutputStream fosXLS1, fosXLS2;
+    private HSSFWorkbook wbXLS1, wbXLS2;
 
     /**Costruttore
      *
@@ -147,21 +149,21 @@ public class Writer {
     public void writeXLS1(){
         try {
             // create a new file
-            FileOutputStream out = new FileOutputStream(controllaFile(nomefile+"_v1.xls"));
+            fosXLS1 = new FileOutputStream(controllaFile(nomefile+"_v1.xls"));
             // create a new workbook
-            HSSFWorkbook wb = new HSSFWorkbook();
+            wbXLS1 = new HSSFWorkbook();
             // create a new sheet
-            HSSFSheet s = wb.createSheet(nomefile);
+            HSSFSheet s = wbXLS1.createSheet(nomefile);
             // declare a row object reference
             HSSFRow r = null;
             // declare a cell object reference
             HSSFCell c = null;
             // create 3 cell styles
-            HSSFCellStyle cs = wb.createCellStyle();
-            HSSFCellStyle cs2 = wb.createCellStyle();
+            HSSFCellStyle cs = wbXLS1.createCellStyle();
+            HSSFCellStyle cs2 = wbXLS1.createCellStyle();
             // create 2 fonts objects
-            HSSFFont f = wb.createFont();
-            HSSFFont f2 = wb.createFont();
+            HSSFFont f = wbXLS1.createFont();
+            HSSFFont f2 = wbXLS1.createFont();
             //set font 1 to 12 point type
             f.setFontHeightInPoints((short) 12);
             // make it bold
@@ -173,7 +175,7 @@ public class Writer {
             cs.setFont(f);
             cs2.setFont(f2);
             // set the sheet name plain ascii
-            wb.setSheetName(0, "Calendario");
+            wbXLS1.setSheetName(0, "Calendario");
             int rownum = -1;
             for (int gg = 0; gg < alGiornate.size(); gg++) {
                 ArrayList<AccoppiamentoVO> alAccopp = alGiornate.get(gg);
@@ -203,19 +205,73 @@ public class Writer {
                         c.setCellValue(new HSSFRichTextString(alSquadre.get(singolo.getRiposa()-1)));
                     }
                 }
-                r = s.createRow(++rownum);
-                c = r.createCell(0);
-                c.setCellValue(new HSSFRichTextString(""));
+                r = s.createRow(++rownum);               
             } //end for giornate
             // write the workbook to the output stream
             // close our file (don't blow out our file handles
-            wb.write(out);
-            out.close();
+            wbXLS1.write(fosXLS1);
+            fosXLS1.close();
         } catch (IOException ioe) {}
     }//end writeXLS1
 
     public void writeXLS2() {
-
+        try {
+            // create a new file
+            fosXLS2 = new FileOutputStream(controllaFile(nomefile+"_v2.xls"));
+            // create a new workbook
+            wbXLS2 = new HSSFWorkbook();
+            // declare a row object reference
+            HSSFRow r = null;
+            // declare a cell object reference
+            HSSFCell c = null;
+            // create 3 cell styles
+            HSSFCellStyle cs = wbXLS2.createCellStyle();
+            HSSFCellStyle cs2 = wbXLS2.createCellStyle();
+            // create 2 fonts objects
+            HSSFFont f = wbXLS2.createFont();
+            HSSFFont f2 = wbXLS2.createFont();
+            //set font 1 to 12 point type
+            f.setFontHeightInPoints((short) 12);
+            // make it bold
+            //arial is the default font
+            f.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+            //set font 2 to 10 point type
+            f2.setFontHeightInPoints((short) 11);
+            //set cell stlye
+            cs.setFont(f);
+            cs2.setFont(f2);
+            for (int gg = 0; gg < alGiornate.size(); gg++) {
+                ArrayList<AccoppiamentoVO> alAccopp = alGiornate.get(gg);
+                // create a new sheet
+                HSSFSheet s = wbXLS2.createSheet("Giornata " + (gg+1));
+                // set the sheet name plain ascii
+                wbXLS2.setSheetName(gg, "Giornata " + (gg+1));
+                int size = alAccopp.size();
+                for (int i = 0; i < size; i++){
+                    // create a row
+                    r = s.createRow(i);
+                    // create a numeric cell
+                    c = r.createCell(0);
+                    c.setCellStyle(cs2);
+                    AccoppiamentoVO singolo = alAccopp.get(i);
+                    if (singolo.getRiposa()==-1){
+                        c.setCellValue(new HSSFRichTextString(alSquadre.get(singolo.getCasa()-1)));
+                        c = r.createCell(1);
+                        c.setCellStyle(cs2);
+                        c.setCellValue(new HSSFRichTextString(alSquadre.get(singolo.getOspite()-1)));
+                    } else {
+                        c.setCellValue(new HSSFRichTextString("Riposa:"));
+                        c = r.createCell(1);
+                        c.setCellStyle(cs2);
+                        c.setCellValue(new HSSFRichTextString(alSquadre.get(singolo.getRiposa()-1)));
+                    }
+                }
+            } //end for giornate
+            // write the workbook to the output stream
+            // close our file (don't blow out our file handles
+            wbXLS2.write(fosXLS2);
+            fosXLS2.close();
+        } catch (IOException ioe) {}
     }
 
     /**crea il file, se esiste lo cancella, e inizializza il bufferedwriter

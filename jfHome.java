@@ -272,7 +272,6 @@ public class jfHome extends JFrame implements WindowListener{
         JMenuItem jmiXLS2 = new JMenuItem("File XLS v.2");
         jmiXLS2.setName("XLS2");
         jmiXLS2.addActionListener(actionListener());
-        jmiXLS2.setEnabled(false);
         JMenuItem jmiAll = new JMenuItem("Tutti i file");
         jmiAll.setName("ALL");
         jmiAll.addActionListener(actionListener());
@@ -301,7 +300,7 @@ public class jfHome extends JFrame implements WindowListener{
                     scrittura.writePDF();
                 else if (menuItemSource.equalsIgnoreCase("XLS1"))
                     scrittura.writeXLS1();
-                else if (menuItemSource.equalsIgnoreCase("XLS1"))
+                else if (menuItemSource.equalsIgnoreCase("XLS2"))
                     scrittura.writeXLS2();
                 else if (menuItemSource.equalsIgnoreCase("ALL"))
                     scrittura.writeALL();
