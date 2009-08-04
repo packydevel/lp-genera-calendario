@@ -2,9 +2,9 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.PageSize;
-
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +12,14 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**Effettua la scrittura del calendario su uno o più tipi di file
  *
@@ -24,7 +32,7 @@ public class Writer {
     private BufferedWriter bwTXT, bwHTML;
     private Document pdf;
     private String nomefile;
-    private ArrayList<ArrayList<AccoppiamentoVO>> alGiornate;
+    private ArrayList <ArrayList<AccoppiamentoVO>> alGiornate;
     private ArrayList<String> alSquadre;
 
     /**Costruttore
@@ -67,7 +75,7 @@ public class Writer {
     } //end txt
 
     /**Scrive su file html */
-    public void writeHtml(){
+    public void writeHTML(){
         try {
             bwHTML = creaFile(nomefile + ".html");
             initHtml("Calendario "+ nomefile);
@@ -86,7 +94,7 @@ public class Writer {
     } // end html
 
     /**Scrive su file pdf */
-    public void writePdf(){
+    public void writePDF(){
         try {
             initPDF();
             for (int gg = 0; gg < alGiornate.size(); gg++) {
@@ -136,6 +144,80 @@ public class Writer {
         catch (DocumentException de) {de.printStackTrace();}
     }
 
+    public void writeXLS1(){
+        try {
+            // create a new file
+            FileOutputStream out = new FileOutputStream(controllaFile(nomefile+"_v1.xls"));
+            // create a new workbook
+            HSSFWorkbook wb = new HSSFWorkbook();
+            // create a new sheet
+            HSSFSheet s = wb.createSheet(nomefile);
+            // declare a row object reference
+            HSSFRow r = null;
+            // declare a cell object reference
+            HSSFCell c = null;
+            // create 3 cell styles
+            HSSFCellStyle cs = wb.createCellStyle();
+            HSSFCellStyle cs2 = wb.createCellStyle();
+            // create 2 fonts objects
+            HSSFFont f = wb.createFont();
+            HSSFFont f2 = wb.createFont();
+            //set font 1 to 12 point type
+            f.setFontHeightInPoints((short) 12);
+            // make it bold
+            //arial is the default font
+            f.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+            //set font 2 to 10 point type
+            f2.setFontHeightInPoints((short) 11);
+            //set cell stlye
+            cs.setFont(f);
+            cs2.setFont(f2);
+            // set the sheet name plain ascii
+            wb.setSheetName(0, "Calendario");
+            int rownum = -1;
+            for (int gg = 0; gg < alGiornate.size(); gg++) {
+                ArrayList<AccoppiamentoVO> alAccopp = alGiornate.get(gg);
+                // create a row
+                r = s.createRow(++rownum);
+                // create a numeric cell
+                c = r.createCell(0);
+                c.setCellStyle(cs);
+                c.setCellValue(new HSSFRichTextString("Giornata " + (gg+1)));
+                int size = alAccopp.size();
+                for (int i = 0; i < size; i++){
+                    // create a row
+                    r = s.createRow(++rownum);
+                    // create a numeric cell
+                    c = r.createCell(0);
+                    c.setCellStyle(cs2);
+                    AccoppiamentoVO singolo = alAccopp.get(i);
+                    if (singolo.getRiposa()==-1){
+                        c.setCellValue(new HSSFRichTextString(alSquadre.get(singolo.getCasa()-1)));
+                        c = r.createCell(1);
+                        c.setCellStyle(cs2);
+                        c.setCellValue(new HSSFRichTextString(alSquadre.get(singolo.getOspite()-1)));
+                    } else {
+                        c.setCellValue(new HSSFRichTextString("Riposa:"));
+                        c = r.createCell(1);
+                        c.setCellStyle(cs2);
+                        c.setCellValue(new HSSFRichTextString(alSquadre.get(singolo.getRiposa()-1)));
+                    }
+                }
+                r = s.createRow(++rownum);
+                c = r.createCell(0);
+                c.setCellValue(new HSSFRichTextString(""));
+            } //end for giornate
+            // write the workbook to the output stream
+            // close our file (don't blow out our file handles
+            wb.write(out);
+            out.close();
+        } catch (IOException ioe) {}
+    }//end writeXLS1
+
+    public void writeXLS2() {
+
+    }
+
     /**crea il file, se esiste lo cancella, e inizializza il bufferedwriter
      *
      * @param nome nome del file
@@ -175,10 +257,19 @@ public class Writer {
         bwHTML.write("<tr><td>" + testo + "</td></tr>\n");
     }
 
+    /**Scrive il tag di chiusura della tabella
+     *
+     * @throws IOException
+     */
     private void closeTableHTML() throws IOException{
         bwHTML.write("</table>\n");
     }
 
+    /**inizializza il pdf e apre lo stream
+     *
+     * @throws FileNotFoundException
+     * @throws DocumentException
+     */
     private void initPDF() throws FileNotFoundException, DocumentException{
         pdf = new Document(PageSize.A4);
         // crea il writer che ascolta il documento e directs a PDF-stream to a file
@@ -187,6 +278,12 @@ public class Writer {
         pdf.open();
     }
 
+    /**aggiunge al pdf il paragrafo composto dal testo
+     * 
+     * @param testo testo da scrivere
+     * @param bold true= testo da grassettare
+     * @throws DocumentException
+     */
     private void addParagraphPdf(String testo, boolean bold) throws DocumentException{
         testo += "\n";
         if (bold)

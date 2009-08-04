@@ -266,12 +266,21 @@ public class jfHome extends JFrame implements WindowListener{
         JMenuItem jmiPdf = new JMenuItem("File PDF");
         jmiPdf.setName("PDF");
         jmiPdf.addActionListener(actionListener());
+        JMenuItem jmiXLS1 = new JMenuItem("File XLS v.1");
+        jmiXLS1.setName("XLS1");
+        jmiXLS1.addActionListener(actionListener());
+        JMenuItem jmiXLS2 = new JMenuItem("File XLS v.2");
+        jmiXLS2.setName("XLS2");
+        jmiXLS2.addActionListener(actionListener());
+        jmiXLS2.setEnabled(false);
         JMenuItem jmiAll = new JMenuItem("Tutti i file");
         jmiAll.setName("ALL");
         jmiAll.addActionListener(actionListener());
         jmPrint.add(jmiTxt);
         jmPrint.add(jmiHtml);
         jmPrint.add(jmiPdf);
+        jmPrint.add(jmiXLS1);
+        jmPrint.add(jmiXLS2);
         jmPrint.add(jmiAll);
 
         this.setJMenuBar(jmbMenu);
@@ -287,9 +296,13 @@ public class jfHome extends JFrame implements WindowListener{
                 if (menuItemSource.equalsIgnoreCase("TXT"))
                     scrittura.writeTXT();
                 else if (menuItemSource.equalsIgnoreCase("HTML"))
-                    scrittura.writeHtml();
+                    scrittura.writeHTML();
                 else if (menuItemSource.equalsIgnoreCase("PDF"))
-                    scrittura.writePdf();
+                    scrittura.writePDF();
+                else if (menuItemSource.equalsIgnoreCase("XLS1"))
+                    scrittura.writeXLS1();
+                else if (menuItemSource.equalsIgnoreCase("XLS1"))
+                    scrittura.writeXLS2();
                 else if (menuItemSource.equalsIgnoreCase("ALL"))
                     scrittura.writeALL();
                 JOptionPane.showMessageDialog(getContentPane(),

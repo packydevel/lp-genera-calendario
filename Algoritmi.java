@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -76,6 +75,65 @@ public class Algoritmi {
         System.out.println("tempo algoritmo berger = " + tempo + " ms");
         return alGiornate;
     } // end berger
+
+    public void blueBonesAlgorithm(int squadre){
+        controlloDispari(squadre);
+
+        // Generate the fixtures using the cyclic algorithm.
+        int giornate = numberTeam - 1;
+        int mid = numberTeam / 2;
+        String[][] rounds = new String[giornate][mid];
+
+        initNumbersArrayList();
+
+        for (int round = 0; round < giornate; round++) {
+            for (int match = 0; match < mid; match++) {
+                int home = (round + match) % giornate;
+                int away = (giornate - match + round) % giornate;
+                // Last team stays in the same place while the others
+                // rotate around it.
+                if (match == 0) {
+                    away = giornate;
+                }
+                // Add one so teams are number 1 to teams not 0 to teams - 1
+                // upon display.
+                rounds[round][match] = (home) + " v " + (away);
+            }
+        }
+
+        // Interleave so that home and away games are fairly evenly dispersed.
+        String[][] interleaved = new String[giornate][mid];
+
+        int evn = 0;
+        int odd = mid;
+        for (int i = 0; i < rounds.length; i++) {
+            if (i % 2 == 0) {
+                interleaved[i] = rounds[evn++];
+            } else {
+                interleaved[i] = rounds[odd++];
+            }
+        }
+
+        rounds = interleaved;
+
+        // Last team can't be away for every game so flip them
+        // to home on odd rounds.
+        for (int round = 0; round < rounds.length; round++) {
+            if (round % 2 == 1) {
+                rounds[round][0] = flip(rounds[round][0]);
+            }
+        }
+
+        ArrayList<ArrayList<AccoppiamentoVO>> alGiornate = new ArrayList<ArrayList<AccoppiamentoVO>>();
+
+
+        if (ghostTeam) {
+            System.out.println("Matches against team " + numberTeam + " are byes.");
+        }
+
+        System.out.println("Use mirror image of these rounds for "
+            + "return fixtures.");
+    }
 
     /**Algoritmo totalmente random, con uso dei nomi delle squadre e stop/ritorno indietro
      * di giornata se si blocca???
@@ -297,72 +355,7 @@ public class Algoritmi {
             }
             System.out.println();
         }
-    }        
-
-    public void blueBonesAlgorithm(int squadre){
-        controlloDispari(squadre);
-
-        // Generate the fixtures using the cyclic algorithm.
-        int giornate = numberTeam - 1;
-        int mid = numberTeam / 2;
-        String[][] rounds = new String[giornate][mid];
-
-        initNumbersArrayList();
-
-        for (int round = 0; round < giornate; round++) {
-            for (int match = 0; match < mid; match++) {
-                int home = (round + match) % giornate;
-                int away = (giornate - match + round) % giornate;
-                // Last team stays in the same place while the others
-                // rotate around it.
-                if (match == 0) {
-                    away = giornate;
-                }
-                // Add one so teams are number 1 to teams not 0 to teams - 1
-                // upon display.
-                rounds[round][match] = (home + 1) + " v " + (away + 1);
-            }
-        }
-
-        // Interleave so that home and away games are fairly evenly dispersed.
-        String[][] interleaved = new String[giornate][mid];
-
-        int evn = 0;
-        int odd = mid;
-        for (int i = 0; i < rounds.length; i++) {
-            if (i % 2 == 0) {
-                interleaved[i] = rounds[evn++];
-            } else {
-                interleaved[i] = rounds[odd++];
-            }
-        }
-
-        rounds = interleaved;
-
-        // Last team can't be away for every game so flip them
-        // to home on odd rounds.
-        for (int round = 0; round < rounds.length; round++) {
-            if (round % 2 == 1) {
-                rounds[round][0] = flip(rounds[round][0]);
-            }
-        }
-
-        // Display the fixtures
-        for (int i = 0; i < rounds.length; i++) {
-            System.out.println("Round " + (i + 1));
-            System.out.println(Arrays.asList(rounds[i]));
-            System.out.println();
-        }
-
-        System.out.println();
-
-        if (ghostTeam) {
-            System.out.println("Matches against team " + numberTeam + " are byes.");
-        }
-
-        System.out.println("Use mirror image of these rounds for "
-            + "return fixtures.");
-    }
+    }            
 
     private String flip(String match) {
         String[] components = match.split(" v ");
