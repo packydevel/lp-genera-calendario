@@ -20,6 +20,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
@@ -29,8 +30,9 @@ import javax.swing.UIManager;
  */
 @SuppressWarnings("serial")
 public class jfHome extends JFrame implements WindowListener{
-    
-    private JPanel jpanel;
+
+    private JTabbedPane jtpHome;
+    private JPanel jpGenera, jpStampa;
     private GridBagConstraints gbcLabel, gbcTextField, gbcComboBox, gbcButton;
     private JTextField jtfNomeCampionato;
     private JComboBox jcbNumeroSquadre;
@@ -47,7 +49,7 @@ public class jfHome extends JFrame implements WindowListener{
         super("Generatore Calendario ");
         this.setPreferredSize(new Dimension(400, 650));
 
-        jpanel = new JPanel(new GridBagLayout());
+        jpGenera = new JPanel(new GridBagLayout());
 
         gbcLabel = new GridBagConstraints();
         gbcLabel.insets = new Insets(2, 2, 2, 2);
@@ -68,25 +70,25 @@ public class jfHome extends JFrame implements WindowListener{
 
         gbcLabel.gridx = 0;
         gbcLabel.gridy = 0;
-        jpanel.add(new JLabel("Nome Campionato:"), gbcLabel);
+        jpGenera.add(new JLabel("Nome Campionato:"), gbcLabel);
 
         jtfNomeCampionato = new JTextField(20);
         gbcTextField.gridx = 1;
         gbcTextField.gridy = 0;
         gbcTextField.gridwidth = 2;
         gbcTextField.fill = GridBagConstraints.HORIZONTAL;
-        jpanel.add(jtfNomeCampionato, gbcTextField);
+        jpGenera.add(jtfNomeCampionato, gbcTextField);
         
         gbcLabel.gridx = 0;
         gbcLabel.gridy = 1;
-        jpanel.add(new JLabel("Numero squadre:"), gbcLabel);
+        jpGenera.add(new JLabel("Numero squadre:"), gbcLabel);
 
         Integer teamsNumber[] = {null, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
         jcbNumeroSquadre = new JComboBox(teamsNumber);
         gbcComboBox.gridx = 1;
         gbcComboBox.gridy = 1;
-        jpanel.add(jcbNumeroSquadre, gbcComboBox);
+        jpGenera.add(jcbNumeroSquadre, gbcComboBox);
         jcbNumeroSquadre.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 creaOggetti();
@@ -102,7 +104,7 @@ public class jfHome extends JFrame implements WindowListener{
                 pulisciCampi();
             }
         });
-        jpanel.add(jbPulisci, gbcButton);
+        jpGenera.add(jbPulisci, gbcButton);
 
         jbCreaCalendario = new JButton("Crea Calendario");
         jbCreaCalendario.setPreferredSize(new Dimension(140, 20));
@@ -113,11 +115,11 @@ public class jfHome extends JFrame implements WindowListener{
                 creaCalendario();
             }
         });
-        jpanel.add(jbCreaCalendario, gbcButton);
+        jpGenera.add(jbCreaCalendario, gbcButton);
         
         gbcTextField.fill = GridBagConstraints.NONE;
 
-        this.add(jpanel);
+        this.add(jpGenera);
         initMenuBar();
         this.setVisible(true);
         pack();
@@ -155,13 +157,8 @@ public class jfHome extends JFrame implements WindowListener{
 
         currentTeamsNumber = ((Integer) jcbNumeroSquadre.getSelectedItem()).intValue();
 
-        if (currentTeamsNumber != previousTeamsNumber && previousTeamsNumber != 0) {
-            for (int j = 0; j < previousTeamsNumber; j++) {
-                jpanel.remove(jlTeams[j]);
-                jpanel.remove(jtfTeams[j]);
-                validate();
-            }
-        }
+        if (currentTeamsNumber != previousTeamsNumber && previousTeamsNumber != 0)
+            removeLabel_TextField();
 
         i = currentTeamsNumber;
         jlTeams = new JLabel[i];
@@ -176,13 +173,13 @@ public class jfHome extends JFrame implements WindowListener{
             jlTeams[j] = new JLabel("Squadra " + (j + 1) + ":");
             
             gbcLabel.gridy = y;
-            jpanel.add(jlTeams[j], gbcLabel);
+            jpGenera.add(jlTeams[j], gbcLabel);
             jlTeams[j].setVisible(true);
 
             jtfTeams[j] = new JTextField();
             jtfTeams[j].setPreferredSize(new Dimension(250, 20));
             gbcTextField.gridy = y;            
-            jpanel.add(jtfTeams[j], gbcTextField);
+            jpGenera.add(jtfTeams[j], gbcTextField);
             jtfTeams[j].setVisible(true);
 
             y++;
@@ -253,6 +250,11 @@ public class jfHome extends JFrame implements WindowListener{
         JMenu jmCalendar = new JMenu("Calendario");
         jmbMenu.add(jmCalendar);
         JMenuItem jmiCreateCalendar = new JMenuItem("Crea nuovo calendario");
+        jmiCreateCalendar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                clear();
+            }
+        });
         jmCalendar.add(jmiCreateCalendar);
 
         JMenu jmPrint = new JMenu("Stampa");
@@ -288,7 +290,6 @@ public class jfHome extends JFrame implements WindowListener{
     private ActionListener actionListener(){
         return new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-
                 Writer scrittura = new Writer(jtfNomeCampionato.getText(),
                                             alSquadre, alGiornate);
                 String menuItemSource = ((JMenuItem)evt.getSource()).getName();
@@ -315,6 +316,25 @@ public class jfHome extends JFrame implements WindowListener{
                 "Info", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (i == 0)
             dispose();
+    }
+
+    private void clear() {
+        removeLabel_TextField();
+        jtfNomeCampionato.setText(null);
+        jcbNumeroSquadre.setSelectedItem(null);
+        previousTeamsNumber = currentTeamsNumber = 0;
+        jlTeams = null;
+        jtfTeams = null;
+        alGiornate.clear();
+        alSquadre.clear();
+    }
+
+    private void removeLabel_TextField(){
+        for (int j = 0; j < previousTeamsNumber; j++) {
+            jpGenera.remove(jlTeams[j]);
+            jpGenera.remove(jtfTeams[j]);
+            validate();
+        }
     }
 
     public void windowOpened(WindowEvent e) { }

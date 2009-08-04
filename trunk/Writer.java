@@ -91,6 +91,7 @@ public class Writer {
                 }
                 closeTableHTML();
             }
+            closeHTML();
             bwHTML.close();
         } catch (IOException ioe) {ioe.printStackTrace();}
     } // end html
@@ -140,6 +141,7 @@ public class Writer {
                 addParagraphPdf("", false);
             }
             bwTXT.close();
+            closeHTML();
             bwHTML.close();
             pdf.close();
         } catch (IOException ioe) {ioe.printStackTrace();}
@@ -319,6 +321,10 @@ public class Writer {
      */
     private void closeTableHTML() throws IOException{
         bwHTML.write("</table>\n");
+    }
+
+    private void closeHTML() throws IOException{
+        bwHTML.write("</body></html>");
     }
 
     /**inizializza il pdf e apre lo stream
