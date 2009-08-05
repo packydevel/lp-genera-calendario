@@ -260,22 +260,22 @@ public class jfHome extends JFrame implements WindowListener{
         JMenu jmPrint = new JMenu("Stampa");
         jmbMenu.add(jmPrint);
         JMenuItem jmiTxt = new JMenuItem("File TXT");
-        jmiTxt.setName("TXT");
+        jmiTxt.setName(WritersMode.TXT.name());
         jmiTxt.addActionListener(actionListener());
         JMenuItem jmiHtml = new JMenuItem("File HTML");
-        jmiHtml.setName("HTML");
+        jmiHtml.setName(WritersMode.HTML.name());
         jmiHtml.addActionListener(actionListener());
         JMenuItem jmiPdf = new JMenuItem("File PDF");
-        jmiPdf.setName("PDF");
+        jmiPdf.setName(WritersMode.PDF.name());
         jmiPdf.addActionListener(actionListener());
         JMenuItem jmiXLS1 = new JMenuItem("File XLS v.1");
-        jmiXLS1.setName("XLS1");
+        jmiXLS1.setName(WritersMode.XLS1.name());
         jmiXLS1.addActionListener(actionListener());
         JMenuItem jmiXLS2 = new JMenuItem("File XLS v.2");
-        jmiXLS2.setName("XLS2");
+        jmiXLS2.setName(WritersMode.XLS2.name());
         jmiXLS2.addActionListener(actionListener());
         JMenuItem jmiAll = new JMenuItem("Tutti i file");
-        jmiAll.setName("ALL");
+        jmiAll.setName(WritersMode.ALL.name());
         jmiAll.addActionListener(actionListener());
         jmPrint.add(jmiTxt);
         jmPrint.add(jmiHtml);
@@ -293,17 +293,17 @@ public class jfHome extends JFrame implements WindowListener{
                 Writer scrittura = new Writer(jtfNomeCampionato.getText(),
                                             alSquadre, alGiornate);
                 String menuItemSource = ((JMenuItem)evt.getSource()).getName();
-                if (menuItemSource.equalsIgnoreCase("TXT"))
+                if (menuItemSource.equalsIgnoreCase(WritersMode.TXT.name()))
                     scrittura.writeTXT();
-                else if (menuItemSource.equalsIgnoreCase("HTML"))
+                else if (menuItemSource.equalsIgnoreCase(WritersMode.HTML.name()))
                     scrittura.writeHTML();
-                else if (menuItemSource.equalsIgnoreCase("PDF"))
+                else if (menuItemSource.equalsIgnoreCase(WritersMode.PDF.name()))
                     scrittura.writePDF();
-                else if (menuItemSource.equalsIgnoreCase("XLS1"))
+                else if (menuItemSource.equalsIgnoreCase(WritersMode.XLS1.name()))
                     scrittura.writeXLS1();
-                else if (menuItemSource.equalsIgnoreCase("XLS2"))
+                else if (menuItemSource.equalsIgnoreCase(WritersMode.XLS2.name()))
                     scrittura.writeXLS2();
-                else if (menuItemSource.equalsIgnoreCase("ALL"))
+                else if (menuItemSource.equalsIgnoreCase(WritersMode.ALL.name()))
                     scrittura.writeALL();
                 JOptionPane.showMessageDialog(getContentPane(),
                                             "file/s salvati in "+scrittura.getCurDir());
