@@ -191,13 +191,12 @@ public class jfHome extends JFrame implements WindowListener{
 
     /**Evento creazione Calendario*/
     private void creaCalendario(){
-        //long inizio = System.currentTimeMillis();
-
         if (jcbNumeroSquadre.getSelectedItem()==null){
             JOptionPane.showMessageDialog(this, "Tutti i campi devo essere valorizzati!!!",
                     "Errore", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         int numeroSquadreCorrente = ((Integer) jcbNumeroSquadre.getSelectedItem()).intValue();
 
         if (jtfNomeCampionato.getText().length() == 0) {
@@ -228,10 +227,7 @@ public class jfHome extends JFrame implements WindowListener{
             }
         }
 
-        alGiornate = Algoritmi.doBergerAlgorithm(numeroSquadreCorrente);
-        //Writer scrittura = new Writer(jtfNomeCampionato.getText(),alSquadre,alGiornate);
-        //scrittura.writeALL();
-        //long tempo = System.currentTimeMillis() - inizio;
+        alGiornate = Algoritmi.doBergerAlgorithm(numeroSquadreCorrente, false);
         JOptionPane.showMessageDialog(this, "Calendario generato, puoi scegliere la modalità di stampa :)");
     } //end creaCalendario
 

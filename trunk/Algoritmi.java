@@ -19,12 +19,14 @@ public class Algoritmi {
      *
      * @param squadre numero di squadre
      */
-    public static ArrayList<ArrayList<AccoppiamentoVO>> doBergerAlgorithm(int squadre){
+    public static ArrayList<ArrayList<AccoppiamentoVO>> doBergerAlgorithm(int squadre, boolean andata){
         long inizio = System.currentTimeMillis();
         controlloDispari(squadre);        
 
         int mid = numberTeam/2;
-        int giornate = (numberTeam - 1) * 2;
+        int giornate = (numberTeam - 1);
+        if (!andata)
+            giornate = giornate * 2;
         int verso = -1;
         if (isDispari(random(numberTeam)))
             verso = 1;
