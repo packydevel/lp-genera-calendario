@@ -356,7 +356,7 @@ public class Writer {
 
     private String accoppiamenti(AccoppiamentoVO singolo, int i, int size){
         String partita = null;
-        if ((i==size-1) && (singolo.getRiposa()!=0))
+        if ((i==size-1) && (singolo.getRiposa()!=-1))
             partita = "Riposa: " + alSquadre.get(singolo.getRiposa()-1);
         else
             partita = alSquadre.get(singolo.getCasa()-1) + " - " +

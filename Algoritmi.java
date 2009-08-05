@@ -18,6 +18,7 @@ public class Algoritmi {
      *
      *
      * @param squadre numero di squadre
+     * @param andata true se fare solo un girone all'italiana, quindi solo andata; false se girone a/r
      */
     public static ArrayList<ArrayList<AccoppiamentoVO>> doBergerAlgorithm(int squadre, boolean andata){
         long inizio = System.currentTimeMillis();

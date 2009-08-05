@@ -11,6 +11,7 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -20,7 +21,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
@@ -31,9 +32,8 @@ import javax.swing.UIManager;
 @SuppressWarnings("serial")
 public class jfHome extends JFrame implements WindowListener{
 
-    private JTabbedPane jtpHome;
-    private JPanel jpGenera, jpStampa;
-    private GridBagConstraints gbcLabel, gbcTextField, gbcComboBox, gbcButton;
+    private JPanel jpGenera;
+    private GridBagConstraints gbcLabel, gbcTextField, gbcComboBox, gbcButton, gbcRadioB;
     private JTextField jtfNomeCampionato;
     private JComboBox jcbNumeroSquadre;
     private JButton jbPulisci, jbCreaCalendario;
@@ -43,6 +43,7 @@ public class jfHome extends JFrame implements WindowListener{
     private JMenuBar jmbMenu;
     private ArrayList<ArrayList<AccoppiamentoVO>> alGiornate;
     private ArrayList<String> alSquadre;
+    private JRadioButton[] jrbOption;
 
     /**Costruttore */
     public jfHome(){
@@ -68,6 +69,9 @@ public class jfHome extends JFrame implements WindowListener{
         gbcButton.insets = new Insets(2, 2, 2, 2);
         gbcButton.anchor = GridBagConstraints.SOUTHEAST;
 
+        gbcRadioB = new GridBagConstraints();
+        gbcRadioB.anchor = GridBagConstraints.NORTHWEST;
+
         gbcLabel.gridx = 0;
         gbcLabel.gridy = 0;
         jpGenera.add(new JLabel("Nome Campionato:"), gbcLabel);
@@ -80,20 +84,37 @@ public class jfHome extends JFrame implements WindowListener{
         jpGenera.add(jtfNomeCampionato, gbcTextField);
         
         gbcLabel.gridx = 0;
-        gbcLabel.gridy = 1;
+        gbcLabel.gridy = 2;
         jpGenera.add(new JLabel("Numero squadre:"), gbcLabel);
 
         Integer teamsNumber[] = {null, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
         jcbNumeroSquadre = new JComboBox(teamsNumber);
         gbcComboBox.gridx = 1;
-        gbcComboBox.gridy = 1;
+        gbcComboBox.gridy = 2;
         jpGenera.add(jcbNumeroSquadre, gbcComboBox);
         jcbNumeroSquadre.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 creaOggetti();
             }
-        });        
+        });
+
+        gbcRadioB.gridx = 0;
+        gbcRadioB.gridy = 1;
+        jpGenera.add(new JLabel("Tipo Calendario:"), gbcRadioB);
+
+        jrbOption = new JRadioButton[2];
+        jrbOption[0] = new JRadioButton("Solo Andata");
+        jrbOption[1] = new JRadioButton("Andata/Ritorno");
+        jrbOption[1].setSelected(true);
+        //Group the radio buttons.
+        ButtonGroup groupJRB = new ButtonGroup();
+        groupJRB.add(jrbOption[0]);
+        groupJRB.add(jrbOption[1]);
+        gbcRadioB.gridx = 1;
+        jpGenera.add(jrbOption[0],gbcRadioB);
+        gbcRadioB.gridx = 2;
+        jpGenera.add(jrbOption[1],gbcRadioB);
 
         jbPulisci = new JButton("Pulisci Campi");
         jbPulisci.setPreferredSize(new Dimension(120, 20));
@@ -226,8 +247,7 @@ public class jfHome extends JFrame implements WindowListener{
                 return;
             }
         }
-
-        alGiornate = Algoritmi.doBergerAlgorithm(numeroSquadreCorrente, false);
+        alGiornate = Algoritmi.doBergerAlgorithm(numeroSquadreCorrente, jrbOption[0].isSelected());
         JOptionPane.showMessageDialog(this, "Calendario generato, puoi scegliere la modalità di stampa :)");
     } //end creaCalendario
 
