@@ -1,3 +1,6 @@
+package org.lp.calendar;
+
+import org.lp.calendar.writers.WritersMode;
 import de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel;
 
 import java.awt.Dimension;
@@ -24,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import org.lp.calendar.writers.Writer;
 
 /**Gui principale
  *
@@ -248,7 +252,7 @@ public class jfHome extends JFrame implements WindowListener{
             }
         }
         alGiornate = Algoritmi.doBergerAlgorithm(numeroSquadreCorrente, jrbOption[0].isSelected());
-        JOptionPane.showMessageDialog(this, "Calendario generato, puoi scegliere la modalità di stampa :)");
+        JOptionPane.showMessageDialog(this, "Calendario generato, puoi scegliere la modalità di stampa dal menù alla voce stampa:)");
     } //end creaCalendario
 
     /**pulisce i campi textfield e combobox*/
