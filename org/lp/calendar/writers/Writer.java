@@ -1,3 +1,6 @@
+package org.lp.calendar.writers;
+
+import org.lp.calendar.AccoppiamentoVO;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
@@ -36,6 +39,7 @@ public class Writer {
     private ArrayList<String> alSquadre;
     private FileOutputStream fosXLS1, fosXLS2;
     private HSSFWorkbook wbXLS1, wbXLS2;
+
 
     /**Costruttore
      *
