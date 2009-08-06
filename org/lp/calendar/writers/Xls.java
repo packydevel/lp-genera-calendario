@@ -27,27 +27,22 @@ public class Xls extends Write{
     private HSSFFont f;
     private HSSFFont f2;
 
+    public Xls(String nome){
+        super(nome);
+    }
+
     public Xls(String nome, ArrayList<ArrayList<AccoppiamentoVO>> giornate, ArrayList<String> squadre) {
         super(nome, giornate, squadre);
     }
-
-    @Override
-    public void write(){
+    
+    public void writeOneSheet(){
         try {
-            initXLS();
-            // create a new sheet
-            sheet = wbXLS.createSheet(getNomefile());
-            // set the sheet name plain ascii
-            wbXLS.setSheetName(0, "Calendario");
+            init(null);
+            addSheet("Calendario", 0);
             int rownum = -1;
             for (int gg = 0; gg < getGiornate().size(); gg++) {
                 ArrayList<AccoppiamentoVO> alAccopp = getGiornate().get(gg);
-                // create a row
-                addRow(++rownum);
-                // create a numeric cell
-                cell = row.createCell(0);
-                cell.setCellStyle(cs);
-                cell.setCellValue(new HSSFRichTextString("Giornata " + (gg+1)));
+                addTitleRow(++rownum, "Giornata " + (gg+1));
                 int size = alAccopp.size();
                 for (int i = 0; i < size; i++){                    
                     AccoppiamentoVO singolo = alAccopp.get(i);
@@ -65,10 +60,33 @@ public class Xls extends Write{
             close();
         } catch (IOException ioe) {}
     }//end write
+    
+    public void writeMultiSheet(){
+        try {
+            init(null);  
+            for (int gg = 0; gg < getGiornate().size(); gg++) {
+                ArrayList<AccoppiamentoVO> alAccopp = getGiornate().get(gg);
+                addSheet("Giornata " + (gg+1), gg);
+                int size = alAccopp.size();
+                for (int i = 0; i < size; i++){                    
+                    AccoppiamentoVO singolo = alAccopp.get(i);
+                    if (singolo.getRiposa()==-1)
+                        addRowCells(i, getSquadre().get(singolo.getCasa()-1),
+                                getSquadre().get(singolo.getOspite()-1));
+                    else
+                        addRowCells(i, "Riposa:",
+                                getSquadre().get(singolo.getRiposa()-1));
+                }                
+            } //end for giornate            
+            close();
+        } catch (IOException ioe) {}
+    }//end write
 
-    public void initXLS() throws FileNotFoundException {
+    @Override
+    protected void init(String title) throws FileNotFoundException {
         // crea il file xls
-        fosXLS = new FileOutputStream(Common.controllaFile(getNomefile()+"_v1.xls"));
+        fosXLS = new FileOutputStream(
+                                Common.controllaFile(getNomefile()+ getExt(WritersMode.XLS)));
         // create a new workbook
         wbXLS = new HSSFWorkbook();
         // create 2 cell styles
@@ -89,11 +107,26 @@ public class Xls extends Write{
         cs2.setFont(f2);
     }
 
-    public void addRow(int r){
+    protected void addSheet(String name, int n) {
+        // create a new sheet
+        sheet = wbXLS.createSheet(name);
+        // set the sheet name plain ascii
+        wbXLS.setSheetName(n, name);
+    }
+
+    protected void addRow(int r){
         row = sheet.createRow(r);
     }
 
-    public void addRowCells(int r, String c1, String c2){
+    protected void addTitleRow(int n, String text) {
+        addRow(n);
+        // create a numeric cell
+        cell = row.createCell(0);
+        cell.setCellStyle(cs);
+        cell.setCellValue(new HSSFRichTextString(text));
+    }
+
+    protected void addRowCells(int r, String c1, String c2){
         // create a row
         addRow(r);
         // create a numeric cell
@@ -106,47 +139,8 @@ public class Xls extends Write{
     }
 
     @Override
-    public void close() throws IOException {
+    protected void close() throws IOException {
         wbXLS.write(fosXLS);
         fosXLS.close();
     }
-/*
-    public void writeXLS2() {
-        try {
-            // create a new file
-            fosXLS2 = new FileOutputStream(controllaFile(nomefile+"_v2.xls"));
-            for (int gg = 0; gg < alGiornate.size(); gg++) {
-                ArrayList<AccoppiamentoVO> alAccopp = alGiornate.get(gg);
-                // create a new sheet
-                HSSFSheet s = wbXLS2.createSheet("Giornata " + (gg+1));
-                // set the sheet name plain ascii
-                wbXLS2.setSheetName(gg, "Giornata " + (gg+1));
-                int size = alAccopp.size();
-                for (int i = 0; i < size; i++){
-                    // create a row
-                    r = s.createRow(i);
-                    // create a numeric cell
-                    c = r.createCell(0);
-                    c.setCellStyle(cs2);
-                    AccoppiamentoVO singolo = alAccopp.get(i);
-                    if (singolo.getRiposa()==-1){
-                        c.setCellValue(new HSSFRichTextString(alSquadre.get(singolo.getCasa()-1)));
-                        c = r.createCell(1);
-                        c.setCellStyle(cs2);
-                        c.setCellValue(new HSSFRichTextString(alSquadre.get(singolo.getOspite()-1)));
-                    } else {
-                        c.setCellValue(new HSSFRichTextString("Riposa:"));
-                        c = r.createCell(1);
-                        c.setCellStyle(cs2);
-                        c.setCellValue(new HSSFRichTextString(alSquadre.get(singolo.getRiposa()-1)));
-                    }
-                }
-            } //end for giornate
-            // write the workbook to the output stream
-            // close our file (don't blow out our file handles
-            wbXLS2.write(fosXLS2);
-            fosXLS2.close();
-        } catch (IOException ioe) {}
-    }
-*/
 }
