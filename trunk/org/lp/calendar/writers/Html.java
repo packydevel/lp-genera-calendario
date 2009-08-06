@@ -40,7 +40,7 @@ public class Html extends Write{
      * @throws IOException
      */
     @Override
-    public void init(String titolo) throws IOException{
+    protected void init(String titolo) throws IOException{
         setBuffered(Common.creaFile(getNomefile() + getExt(WritersMode.HTML)));
         writeBuffered("<html>\n<head>");
         if (titolo!=null)
@@ -48,11 +48,11 @@ public class Html extends Write{
         writeBuffered("</head>\n<body>\n");
     }
 
-    public void initTableHTML(String testo) throws IOException{
+    protected void initTableHTML(String testo) throws IOException{
         writeBuffered("<table>\n<tr><td><b>" + testo + "</b></td></tr>\n");
     }
 
-    public void initTableRowHTML(String testo) throws IOException{
+    protected void initTableRowHTML(String testo) throws IOException{
         writeBuffered("<tr><td>" + testo + "</td></tr>\n");
     }
 
@@ -60,12 +60,12 @@ public class Html extends Write{
      *
      * @throws IOException
      */
-    public  void closeTableHTML() throws IOException{
+    protected  void closeTableHTML() throws IOException{
         writeBuffered("</table>\n");
     }
 
     @Override
-    public void close() throws IOException{
+    protected void close() throws IOException{
         writeBuffered("</body></html>");
         closeBuffered();
     }
