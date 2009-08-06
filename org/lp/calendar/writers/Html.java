@@ -7,14 +7,19 @@ import org.lp.calendar.Common;
 
 public class Html extends Write{
 
+    public Html(String nome){
+        super(nome);
+    }
+
     public Html(String nome, ArrayList<ArrayList<AccoppiamentoVO>> giornate, ArrayList<String> squadre) {
         super(nome, giornate, squadre);
     }
 
+
+    @Override
     public void write(){
-        try {
-            setBuffered(Common.creaFile(getNomefile() + getExt(WritersMode.HTML)));
-            initHtml("Calendario "+ getNomefile());
+        try {            
+            init("Calendario "+ getNomefile());
             for (int gg = 0; gg < getGiornate().size(); gg++) {
                 ArrayList<AccoppiamentoVO> alAccopp = getGiornate().get(gg);
                 initTableHTML("Giornata " + (gg+1));
@@ -25,8 +30,7 @@ public class Html extends Write{
                 }
                 closeTableHTML();
             }
-            closeHTML();
-            closeBuffered();
+            close();            
         } catch (IOException ioe) {ioe.printStackTrace();}
     } // end html
 
@@ -35,18 +39,20 @@ public class Html extends Write{
      * @param titolo titolo dell'html
      * @throws IOException
      */
-    private void initHtml(String titolo) throws IOException{
+    @Override
+    public void init(String titolo) throws IOException{
+        setBuffered(Common.creaFile(getNomefile() + getExt(WritersMode.HTML)));
         writeBuffered("<html>\n<head>");
         if (titolo!=null)
             writeBuffered("\n<title>"+ titolo + "</title>\n");
         writeBuffered("</head>\n<body>\n");
     }
 
-    private void initTableHTML(String testo) throws IOException{
+    public void initTableHTML(String testo) throws IOException{
         writeBuffered("<table>\n<tr><td><b>" + testo + "</b></td></tr>\n");
     }
 
-    private void initTableRowHTML(String testo) throws IOException{
+    public void initTableRowHTML(String testo) throws IOException{
         writeBuffered("<tr><td>" + testo + "</td></tr>\n");
     }
 
@@ -54,12 +60,13 @@ public class Html extends Write{
      *
      * @throws IOException
      */
-    private void closeTableHTML() throws IOException{
+    public  void closeTableHTML() throws IOException{
         writeBuffered("</table>\n");
     }
 
-    private void closeHTML() throws IOException{
+    @Override
+    public void close() throws IOException{
         writeBuffered("</body></html>");
+        closeBuffered();
     }
-
 }

@@ -13,25 +13,44 @@ public class Txt extends Write{
     
     private final String crlf = "\r\n";
 
+    public Txt(String nome) {
+        super(nome);
+    }
+
     public Txt(String nome, ArrayList<ArrayList<AccoppiamentoVO>> giornate, ArrayList<String> squadre) {
         super(nome, giornate, squadre);
     }
 
     /**Scrive su file di testo */
+    @Override
     public void write() {
         try {
-            setBuffered(Common.creaFile(getNomefile() + getExt(WritersMode.TXT)));
+            init(null);
             for (int gg = 0; gg < getGiornate().size(); gg++) {
                 ArrayList<AccoppiamentoVO> alAccopp = super.getGiornate().get(gg);
-                writeBuffered("Giornata " + (gg+1) + crlf);
+                addRow("Giornata " + (gg+1));
                 int size = alAccopp.size();
                 for (int i = 0; i < size; i++){
                     String partita = Common.accoppiamenti(alAccopp.get(i), getSquadre(), i, size);
-                    writeBuffered(partita+crlf);
+                    addRow(partita);
                 }
-                writeBuffered(crlf);
+                addRow("");
             }
-            closeBuffered();
+            close();
         } catch (IOException ioe) {ioe.printStackTrace();}
-    } //end txt
+    } //end write
+
+    @Override
+    public void init(String title) throws IOException {
+        setBuffered(Common.creaFile(getNomefile() + getExt(WritersMode.TXT)));
+    }
+
+    public void addRow(String text) throws IOException{
+        writeBuffered(text+crlf);
+    }
+
+    @Override
+    public void close() throws IOException{
+        closeBuffered();
+    }
 }

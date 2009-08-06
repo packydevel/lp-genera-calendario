@@ -9,6 +9,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.lp.calendar.AccoppiamentoVO;
@@ -18,13 +19,18 @@ public class Pdf extends Write{
 
     private Document pdf;
 
+    public Pdf(String nome){
+        super(nome);
+    }
+
     public Pdf(String nome, ArrayList<ArrayList<AccoppiamentoVO>> giornate, ArrayList<String> squadre) {
         super(nome, giornate, squadre);
     }
 
+    @Override
     public void write(){
         try {
-            initPDF();
+            init(null);
             for (int gg = 0; gg < getGiornate().size(); gg++) {
                 ArrayList<AccoppiamentoVO> alAccopp = getGiornate().get(gg);
                 addParagraphPdf("Giornata " + (gg+1), true);
@@ -35,8 +41,8 @@ public class Pdf extends Write{
                 }
                 addParagraphPdf("", false);
             }
-            pdf.close();
-        } catch (FileNotFoundException fnfe) {fnfe.printStackTrace();}
+            close();
+        } catch (IOException ioe) {ioe.printStackTrace();}
         catch (DocumentException de) {de.printStackTrace();}
     }
 
@@ -45,7 +51,8 @@ public class Pdf extends Write{
      * @throws FileNotFoundException
      * @throws DocumentException
      */
-    private void initPDF() throws FileNotFoundException, DocumentException{
+    @Override
+    public void init(String title) throws IOException, DocumentException{
         pdf = new Document(PageSize.A4);
         // crea il writer che ascolta il documento e directs a PDF-stream to a file
         PdfWriter.getInstance(pdf, new FileOutputStream(
@@ -60,11 +67,16 @@ public class Pdf extends Write{
      * @param bold true= testo da grassettare
      * @throws DocumentException
      */
-    private void addParagraphPdf(String testo, boolean bold) throws DocumentException{
+    public void addParagraphPdf(String testo, boolean bold) throws DocumentException{
         testo += "\n";
         if (bold)
             pdf.add(new Paragraph(testo, new Font(Font.TIMES_ROMAN, 12, Font.BOLD)));
         else
             pdf.add(new Paragraph(testo, new Font(Font.TIMES_ROMAN, 12)));
+    }
+
+    @Override
+    public void close(){
+        pdf.close();
     }
 }
