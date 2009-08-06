@@ -52,7 +52,7 @@ public class Pdf extends Write{
      * @throws DocumentException
      */
     @Override
-    public void init(String title) throws IOException, DocumentException{
+    protected void init(String title) throws IOException, DocumentException{
         pdf = new Document(PageSize.A4);
         // crea il writer che ascolta il documento e directs a PDF-stream to a file
         PdfWriter.getInstance(pdf, new FileOutputStream(
@@ -67,7 +67,7 @@ public class Pdf extends Write{
      * @param bold true= testo da grassettare
      * @throws DocumentException
      */
-    public void addParagraphPdf(String testo, boolean bold) throws DocumentException{
+    protected void addParagraphPdf(String testo, boolean bold) throws DocumentException{
         testo += "\n";
         if (bold)
             pdf.add(new Paragraph(testo, new Font(Font.TIMES_ROMAN, 12, Font.BOLD)));
@@ -76,7 +76,7 @@ public class Pdf extends Write{
     }
 
     @Override
-    public void close(){
+    protected void close(){
         pdf.close();
     }
 }

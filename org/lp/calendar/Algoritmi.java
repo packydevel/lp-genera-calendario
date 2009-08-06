@@ -77,7 +77,8 @@ public class Algoritmi {
             matriceBerger = rotateMatriceBerger(matriceBerger, verso, mid);
         }
         long tempo = System.nanoTime() - inizio;
-        System.out.println("tempo algoritmo berger = " + tempo + " ns");
+        System.out.println("tempo algoritmo berger = " + tempo/1000 + " microS");
+        //System.out.println("tempo algoritmo berger = " + tempo + " nanoS");
         return alGiornate;
     } // end berger
 
@@ -360,7 +361,14 @@ public class Algoritmi {
             }
             System.out.println();
         }
-    }            
+    }
+    
+    /**Algoritmo by tommy, da implementare
+     * 
+     */
+    public void tommyAlgorithm(){
+
+    }
 
     private String flip(String match) {
         String[] components = match.split(" v ");
@@ -454,11 +462,16 @@ public class Algoritmi {
         Collections.shuffle(alNumbers);
     }
 
+    @SuppressWarnings("static-access")
     public static void main (String args[]){
-        Algoritmi a1 = new Algoritmi();
-        a1.blueBonesAlgorithm(10);
-        System.out.println();
-        Algoritmi a2 = new Algoritmi();
-        a2.blueBonesAlgorithm(10);
+        Algoritmi a1, a2, a3;
+        for (int i=0; i<5; i++){
+            a1 = new Algoritmi();
+            a2 = new Algoritmi();
+            a3 = new Algoritmi();
+            a1.doBergerAlgorithm(10, false);
+            a2.doBergerAlgorithm(20, false);
+            a3.doBergerAlgorithm(30, false);
+        }
     }
 }

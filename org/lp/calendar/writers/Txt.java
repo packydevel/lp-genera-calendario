@@ -41,16 +41,16 @@ public class Txt extends Write{
     } //end write
 
     @Override
-    public void init(String title) throws IOException {
+    protected  void init(String title) throws IOException {
         setBuffered(Common.creaFile(getNomefile() + getExt(WritersMode.TXT)));
     }
 
-    public void addRow(String text) throws IOException{
+    protected void addRow(String text) throws IOException{
         writeBuffered(text+crlf);
     }
 
     @Override
-    public void close() throws IOException{
+    protected void close() throws IOException{
         closeBuffered();
     }
 }
