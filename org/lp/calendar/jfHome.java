@@ -1,6 +1,5 @@
 package org.lp.calendar;
 
-import org.lp.calendar.writers.WritersMode;
 import de.javasoft.plaf.synthetica.SyntheticaStandardLookAndFeel;
 
 import java.awt.Dimension;
@@ -27,7 +26,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import org.lp.calendar.writers.Writer;
+
+import org.lp.calendar.writers.*;
 
 /**Gui principale
  *
@@ -109,8 +109,7 @@ public class jfHome extends JFrame implements WindowListener{
 
         jrbOption = new JRadioButton[2];
         jrbOption[0] = new JRadioButton("Solo Andata");
-        jrbOption[1] = new JRadioButton("Andata/Ritorno");
-        jrbOption[1].setSelected(true);
+        jrbOption[1] = new JRadioButton("Andata/Ritorno");        
         //Group the radio buttons.
         ButtonGroup groupJRB = new ButtonGroup();
         groupJRB.add(jrbOption[0]);
@@ -225,17 +224,23 @@ public class jfHome extends JFrame implements WindowListener{
         int numeroSquadreCorrente = ((Integer) jcbNumeroSquadre.getSelectedItem()).intValue();
 
         if (jtfNomeCampionato.getText().length() == 0) {
-            JOptionPane.showMessageDialog(this, "Tutti i campi devo essere valorizzati!!!",
+            JOptionPane.showMessageDialog(this, "Tutti i campi devono essere valorizzati!!!",
                     "Errore", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         for (int j = 0; j < numeroSquadreCorrente; j++) {
             if (jtfTeams[j].getText().length() == 0) {
-                JOptionPane.showMessageDialog(this, "Tutti i campi devo essere valorizzati!!!",
+                JOptionPane.showMessageDialog(this, "Tutti i campi devono essere valorizzati!!!",
                         "Errore", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+        }
+
+        if (!jrbOption[0].isSelected() && !jrbOption[1].isSelected()){
+            JOptionPane.showMessageDialog(this, "Deve essere scelto il Tipo di Calendario da generare!!!",
+                        "Errore", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         alSquadre = new ArrayList<String>();
@@ -310,23 +315,24 @@ public class jfHome extends JFrame implements WindowListener{
     private ActionListener actionListener(){
         return new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                Writer scrittura = new Writer(jtfNomeCampionato.getText(),
-                                            alSquadre, alGiornate);
+                Write scrittura = null;
+                String nome = jtfNomeCampionato.getText();
                 String menuItemSource = ((JMenuItem)evt.getSource()).getName();
                 if (menuItemSource.equalsIgnoreCase(WritersMode.TXT.name()))
-                    scrittura.writeTXT();
+                    scrittura = new Txt(nome, alGiornate, alSquadre);
                 else if (menuItemSource.equalsIgnoreCase(WritersMode.HTML.name()))
-                    scrittura.writeHTML();
+                    scrittura = new Html(nome, alGiornate, alSquadre);
                 else if (menuItemSource.equalsIgnoreCase(WritersMode.PDF.name()))
-                    scrittura.writePDF();
+                    scrittura = new Pdf(nome, alGiornate, alSquadre);
                 else if (menuItemSource.equalsIgnoreCase(WritersMode.XLS1.name()))
-                    scrittura.writeXLS1();
+                    scrittura = new Xls(nome+"_v1", alGiornate, alSquadre);
                 else if (menuItemSource.equalsIgnoreCase(WritersMode.XLS2.name()))
-                    scrittura.writeXLS2();
+                    scrittura = new Xls2(nome+"_v2", alGiornate, alSquadre);
                 else if (menuItemSource.equalsIgnoreCase(WritersMode.ALL.name()))
-                    scrittura.writeALL();
+                    scrittura = new All(nome, alGiornate, alSquadre);
+                scrittura.write();
                 JOptionPane.showMessageDialog(getContentPane(),
-                                            "file/s salvati in "+scrittura.getCurDir());
+                                            "file/s salvati in "+Common.getCurDir());
             }
         };
     }   
@@ -345,8 +351,13 @@ public class jfHome extends JFrame implements WindowListener{
         previousTeamsNumber = currentTeamsNumber = 0;
         jlTeams = null;
         jtfTeams = null;
-        alGiornate.clear();
-        alSquadre.clear();
+        if (alGiornate!=null)
+            alGiornate.clear();
+        if (alSquadre!=null)
+            alSquadre.clear();
+        jrbOption[0].setSelected(false);
+        jrbOption[1].setSelected(false);
+        validate();
     }
 
     private void removeLabel_TextField(){
