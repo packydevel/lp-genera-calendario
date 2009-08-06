@@ -35,7 +35,8 @@ public class Xls extends Write{
         super(nome, giornate, squadre);
     }
     
-    public void writeOneSheet(){
+    @Override
+    public void write(){
         try {
             init(null);
             addSheet("Calendario", 0);
@@ -59,28 +60,7 @@ public class Xls extends Write{
             // close our file (don't blow out our file handles
             close();
         } catch (IOException ioe) {}
-    }//end write
-    
-    public void writeMultiSheet(){
-        try {
-            init(null);  
-            for (int gg = 0; gg < getGiornate().size(); gg++) {
-                ArrayList<AccoppiamentoVO> alAccopp = getGiornate().get(gg);
-                addSheet("Giornata " + (gg+1), gg);
-                int size = alAccopp.size();
-                for (int i = 0; i < size; i++){                    
-                    AccoppiamentoVO singolo = alAccopp.get(i);
-                    if (singolo.getRiposa()==-1)
-                        addRowCells(i, getSquadre().get(singolo.getCasa()-1),
-                                getSquadre().get(singolo.getOspite()-1));
-                    else
-                        addRowCells(i, "Riposa:",
-                                getSquadre().get(singolo.getRiposa()-1));
-                }                
-            } //end for giornate            
-            close();
-        } catch (IOException ioe) {}
-    }//end write
+    }//end write        
 
     @Override
     protected void init(String title) throws FileNotFoundException {

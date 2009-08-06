@@ -72,7 +72,7 @@ public class All extends Write{
         pdf = new Pdf(getNomefile());
         html = new Html(getNomefile());
         xls1 = new Xls(getNomefile()+"_v1");
-        xls2 = new Xls(getNomefile()+"_v2");
+        xls2 = new Xls2(getNomefile()+"_v2");
         txt.init(null);
         html.init("Calendario "+ getNomefile());
         pdf.init(null);
