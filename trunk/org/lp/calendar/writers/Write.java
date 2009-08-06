@@ -1,8 +1,11 @@
 package org.lp.calendar.writers;
 
+import com.lowagie.text.DocumentException;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import org.lp.calendar.AccoppiamentoVO;
 
 
@@ -14,6 +17,15 @@ public class Write {
     private BufferedWriter bw;
     private final String txt = ".txt";
     private final String html = ".html";
+    private final String pdf = ".pdf";
+    private final String xls = ".xls";
+
+    /**Costruttore
+     * 
+     */
+    public Write(String nome) {
+        nomefile = nome;
+    }
 
     /**Costruttore
      *
@@ -61,9 +73,14 @@ public class Write {
             return txt;
         else if (wm == WritersMode.HTML)
             return html;
-        else if (wm == WritersMode.TXT)
-            return txt;
-
+        else if (wm == WritersMode.PDF)
+            return pdf;
+        else if (wm == WritersMode.XLS)
+            return xls;
         return null;
     }
+
+    protected void init(String title) throws IOException, DocumentException{}
+    public void write() {}
+    protected void close() throws IOException {}
 }
