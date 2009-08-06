@@ -23,7 +23,7 @@ public class Algoritmi {
      * @param andata true se fare solo un girone all'italiana, quindi solo andata; false se girone a/r
      */
     public static ArrayList<ArrayList<AccoppiamentoVO>> doBergerAlgorithm(int squadre, boolean andata){
-        long inizio = System.currentTimeMillis();
+        long inizio = System.nanoTime();
         controlloDispari(squadre);        
 
         int mid = numberTeam/2;
@@ -76,8 +76,8 @@ public class Algoritmi {
             alGiornate.add(alAccoppiamenti);
             matriceBerger = rotateMatriceBerger(matriceBerger, verso, mid);
         }
-        long tempo = System.currentTimeMillis() - inizio;
-        System.out.println("tempo algoritmo berger = " + tempo + " ms");
+        long tempo = System.nanoTime() - inizio;
+        System.out.println("tempo algoritmo berger = " + tempo + " ns");
         return alGiornate;
     } // end berger
 
