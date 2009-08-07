@@ -40,31 +40,31 @@ public class Write {
         alSquadre = squadre;
     }
 
-    public ArrayList<ArrayList<AccoppiamentoVO>> getGiornate() {
+    protected ArrayList<ArrayList<AccoppiamentoVO>> getGiornate() {
         return alGiornate;
     }
 
-    public ArrayList<String> getSquadre() {
+    protected ArrayList<String> getSquadre() {
         return alSquadre;
     }
 
-    public BufferedWriter getBuffered() {
+    protected BufferedWriter getBuffered() {
         return bw;
     }
 
-    public void setBuffered(BufferedWriter bw) {
+    protected void setBuffered(BufferedWriter bw) {
         this.bw = bw;
     }
 
-    public String getNomefile() {
+    protected String getNomefile() {
         return nomefile;
     }
 
-    public void closeBuffered() throws IOException{
+    protected void closeBuffered() throws IOException{
         bw.close();
     }
 
-    public void writeBuffered(String text) throws IOException {
+    protected void writeBuffered(String text) throws IOException {
         bw.write(text);
     }
 
